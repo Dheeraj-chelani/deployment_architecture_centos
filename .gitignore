@@ -1,0 +1,20 @@
+# Environment & Secrets
+.env
+*.env
+# Vagrant
+.vagrant/
+
+# Database Backups
+backups/
+
+# Python Virtual Environment
+.venv/
+
+# Logs
+*.log
+
+# IDE / Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
