@@ -1,4 +1,4 @@
-# ProShop — Production-Style Django Deployment on Multi-VM Infrastructure
+# ProShop — Production-Style Django Deployment on Multi-VM Infrastructure on Centos 9
 
 > A production-style deployment of a Django e-commerce application on a 4-VM Vagrant infrastructure featuring load balancing, automated provisioning, database backup, and server health monitoring.
 
