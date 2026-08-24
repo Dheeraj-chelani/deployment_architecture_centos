@@ -102,6 +102,7 @@ Deploying a web application in a reproducible, scalable, and production-ready ma
 | Version Control | Git + GitHub | Source code management |
 | Scripting | Bash | Provisioning and automation scripts |
 | Configuration | python-decouple | Environment variable management |
+| Security | Firewall | for enhance the security on port |
 
 ---
 
