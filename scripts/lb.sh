@@ -10,6 +10,8 @@ dnf update -y
 # ADDED: policycoreutils-python-utils (for SELinux `setsebool`),
 #        firewalld + cronie (not guaranteed present/running on minimal boxes).
 dnf install -y nginx curl policycoreutils-python-utils firewalld cronie
+dnf install -y epel-release
+dnf install -y msmtp
 
 systemctl enable --now firewalld
 systemctl enable --now crond
@@ -55,6 +57,28 @@ setsebool -P httpd_can_network_connect on
 # since nothing was blocking traffic there by default).
 firewall-cmd --permanent --add-port=80/tcp
 firewall-cmd --reload
+
+# Email alerting setup — msmtp + Gmail SMTP
+
+
+
+cat > /etc/msmtprc << EOF
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/pki/tls/certs/ca-bundle.crt
+logfile        /var/log/msmtp.log
+
+account        gmail
+host           smtp.gmail.com
+port           587
+from           ${GMAIL}
+user           ${GMAIL}
+password       ${GMAIL_PASSWORD}
+
+account default : gmail
+EOF
+chmod 600 /etc/msmtprc
 
 # Timezone command is identical on both distros (systemd timedatectl).
 timedatectl set-timezone Asia/Kolkata

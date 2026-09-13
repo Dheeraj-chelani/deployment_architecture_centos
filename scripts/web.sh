@@ -16,7 +16,8 @@ dnf install -y mysql-devel pkgconfig \
     policycoreutils-python-utils \
     firewalld cronie curl
 
-
+dnf install -y epel-release
+dnf install -y msmtp
 # dnf install -y python3 pytho+1 Daily Checn3-pip nginx git gcc \
 #     mysql 
 # dnf module enable mysql:8.4 -y    
@@ -178,6 +179,30 @@ chown -R vagrant:nginx /home/vagrant/proshop
 chmod -R 775 /home/vagrant/proshop
 usermod -aG vagrant nginx
 
+
+
+# Email alerting setup — msmtp + Gmail SMTP
+dnf install -y epel-release
+dnf install -y msmtp
+
+
+cat > /etc/msmtprc << EOF
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/pki/tls/certs/ca-bundle.crt
+logfile        /var/log/msmtp.log
+
+account        gmail
+host           smtp.gmail.com
+port           587
+from           ${GMAIL}
+user           ${GMAIL}
+password       ${GMAIL_PASSWORD}
+
+account default : gmail
+EOF
+chmod 600 /etc/msmtprc
 
 # SELinux settings
 setsebool -P httpd_can_network_connect 1

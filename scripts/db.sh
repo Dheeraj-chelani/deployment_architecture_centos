@@ -4,6 +4,9 @@ echo "=== Database Server Provisioning Start (CentOS Stream 9) ==="
 
 dnf update -y
 dnf install -y mysql-server
+dnf install -y epel-release
+dnf install -y msmtp
+dnf install -y cronie
 
 if ! command -v firewall-cmd &>/dev/null; then
     dnf install -y firewalld
@@ -56,6 +59,7 @@ DB_NAME="proshop_db"
 DB_USER="${DB_USER}"
 DB_PASSWORD="${DB_PASSWORD}"
 
+
 # Database aur user banao
 mysql -u root -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME} \
     CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
@@ -64,6 +68,37 @@ mysql -u root -e "CREATE USER IF NOT EXISTS \
 mysql -u root -e "GRANT ALL PRIVILEGES ON ${DB_NAME}.* \
     TO '${DB_USER}'@'%';"
 mysql -u root -e "FLUSH PRIVILEGES;"
+
+
+# Email alerting setup — msmtp + Gmail SMTP
+
+GMAIL="${GMAIL}"
+GMAIL_PASSWORD="${GMAIL_PASSWORD}"
+
+cat > /etc/msmtprc << EOF
+defaults
+auth           on
+tls            on
+tls_trust_file /etc/pki/tls/certs/ca-bundle.crt
+logfile        /var/log/msmtp.log
+
+account        gmail
+host           smtp.gmail.com
+port           587
+from           ${GMAIL}
+user           ${GMAIL}
+password       ${GMAIL_PASSWORD}
+
+account default : gmail
+EOF
+chmod 600 /etc/msmtprc
+
+# DB monitoring cron (db.sh mein pehle koi monitoring cron nahi tha)
+timedatectl set-timezone Asia/Kolkata
+
+systemctl enable --now crond
+(crontab -l 2>/dev/null || true; echo "*/5 * * * * /bin/bash /vagrant/scripts/db_monitor.sh") | crontab -
+
 
 # Firewall
 firewall-cmd --permanent --add-port=3306/tcp

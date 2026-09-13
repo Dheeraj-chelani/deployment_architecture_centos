@@ -32,13 +32,14 @@ end
 # here on your laptop with a clear message — instead of finding out deep
 # inside a VM via a confusing MySQL "Access denied" error after provisioning
 # has already run.
-["SECRET_KEY", "DB_USER", "DB_PASSWORD"].each do |key|
+["SECRET_KEY", "DB_USER", "DB_PASSWORD", "GMAIL", "GMAIL_PASSWORD"].each do |key|
   if ENV[key].nil? || ENV[key].strip.empty?
     raise "#{key} is empty or missing! Check that secrets.env exists next to this Vagrantfile and contains #{key}=..."
   end
 end
 
 Vagrant.configure("2") do |config|
+  # config.vm.synced_folder ".", "/vagrant", type: "nfs"
 
   # 1. DATABASE SERVER
   config.vm.define "db" do |db|
@@ -53,7 +54,9 @@ Vagrant.configure("2") do |config|
       path: "scripts/db.sh",
       env: {
         "DB_USER"     => ENV["DB_USER"],
-        "DB_PASSWORD" => ENV["DB_PASSWORD"]
+        "DB_PASSWORD" => ENV["DB_PASSWORD"],
+        "GMAIL"         => ENV["GMAIL"],
+        "GMAIL_PASSWORD" => ENV["GMAIL_PASSWORD"]
       }
   end
 
@@ -72,7 +75,9 @@ Vagrant.configure("2") do |config|
       env: {
         "SECRET_KEY"  => ENV["SECRET_KEY"],
         "DB_USER"     => ENV["DB_USER"],
-        "DB_PASSWORD" => ENV["DB_PASSWORD"]
+        "DB_PASSWORD" => ENV["DB_PASSWORD"],
+        "GMAIL"       => ENV["GMAIL"],
+        "GMAIL_PASSWORD" => ENV["GMAIL_PASSWORD"]
       }
   end
 
@@ -91,7 +96,9 @@ Vagrant.configure("2") do |config|
       env: {
         "SECRET_KEY"  => ENV["SECRET_KEY"],
         "DB_USER"     => ENV["DB_USER"],
-        "DB_PASSWORD" => ENV["DB_PASSWORD"]
+        "DB_PASSWORD" => ENV["DB_PASSWORD"],
+        "GMAIL"       => ENV["GMAIL"],
+        "GMAIL_PASSWORD" => ENV["GMAIL_PASSWORD"]
       }
   end
 
@@ -106,7 +113,11 @@ Vagrant.configure("2") do |config|
       vb.cpus = 1
     end
     lb.vm.provision "shell",
-      path: "scripts/lb.sh"
+      path: "scripts/lb.sh",
+      env: {
+        "GMAIL"       => ENV["GMAIL"],
+        "GMAIL_PASSWORD" => ENV["GMAIL_PASSWORD"]
+      }
   end
 
 end
