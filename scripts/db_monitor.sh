@@ -1,12 +1,5 @@
 #!/bin/bash
-# db_monitor.sh — for Database VM (192.168.56.12)
-#
-# WHY THIS SCRIPT NEEDED TO EXIST:
-# Right now Web1, Web2, and the LB all get monitored — but the DB VM itself
-# has zero visibility. If MySQL's own CPU/RAM/disk gets stressed, or mysqld
-# crashes, you'd only find out indirectly (web servers' "db: disconnected"
-# alert) — you wouldn't know if it's a DB-VM problem or a network problem
-# between VMs. This script closes that blind spot.
+
 
 LOG_FILE="/var/log/db_monitor.log"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
@@ -23,11 +16,7 @@ RAM=$(free | grep Mem | awk '{printf "%.0f", $3/$2 * 100}')
 DISK=$(df / | tail -1 | awk '{print $5}' | cut -d'%' -f1)
 MYSQLD=$(systemctl is-active mysqld)
 
-# Connection-usage check — this is DB-specific and doesn't apply to web
-# servers, so it lives only here. Recall from the crash-scenario discussion:
-# if too many connections pile up (e.g. a connection leak on the web tier),
-# MySQL starts rejecting new ones — this catches that BEFORE it becomes a
-# site-wide outage.
+
 CONN_PCT="N/A"
 if [ "$MYSQLD" = "active" ]; then
     MAX_CONN=$(mysql -N -e "SHOW VARIABLES LIKE 'max_connections';" 2>/dev/null | awk '{print $2}')

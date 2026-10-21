@@ -1,16 +1,6 @@
 #!/bin/bash
 
-# NOTE: No functional changes needed for CentOS Stream 9 in this file.
-# `top`, `free`, `df`, `systemctl`, and `curl` all behave identically —
-# curl is explicitly installed via dnf in lb.sh's provisioning step to
-# guarantee it's present (CentOS minimal images sometimes ship only
-# curl-minimal, but it provides the same `curl` binary/flags used here).
 
-#!/bin/bash
-# lb_monitor.sh — for Load Balancer VM (192.168.56.10)
-# Same email-alert + cooldown pattern as web servers' monitor.sh, but checks
-# LB's own Nginx health PLUS whether Web1/Web2 are reachable from the LB's
-# point of view (this is the LB's actual job — detect upstream failures).
 
 LOG_FILE="/var/log/lb_monitor.log"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')

@@ -5,10 +5,7 @@ echo "=== Load Balancer Provisioning Start (CentOS Stream 9) ==="
 # CHANGED: apt-get -> dnf
 dnf update -y
 
-# CHANGED: nginx is available directly from CentOS Stream 9's AppStream repo
-# (no EPEL or third-party repo needed, unlike some older RHEL guides suggest).
-# ADDED: policycoreutils-python-utils (for SELinux `setsebool`),
-#        firewalld + cronie (not guaranteed present/running on minimal boxes).
+
 dnf install -y nginx curl policycoreutils-python-utils firewalld cronie
 dnf install -y epel-release
 dnf install -y msmtp
@@ -16,10 +13,7 @@ dnf install -y msmtp
 systemctl enable --now firewalld
 systemctl enable --now crond
 
-# CHANGED: RHEL's nginx package has NO sites-available/sites-enabled
-# convention (that's Debian/Ubuntu-specific). Config files instead go
-# straight into /etc/nginx/conf.d/*.conf, which the stock nginx.conf
-# already `include`s automatically.
+
 cat > /etc/nginx/conf.d/loadbalancer.conf << 'EOF'
 upstream django_servers {
     server 192.168.56.11:80;
@@ -39,18 +33,7 @@ server {
     }
 }
 EOF
-# NOTE on "listen 80 default_server;" above:
-# RHEL's stock /etc/nginx/nginx.conf ships with its own built-in server{}
-# block (Ubuntu's nginx package does NOT have this). Without explicitly
-# marking our block as default_server, that stock block can end up winning
-# for unmatched requests. Setting default_server here forces our config to
-# take priority regardless of load order.
 
-# ADDED: SELinux (enforcing by default on CentOS/RHEL; not present at all on
-# Ubuntu) blocks nginx from making OUTBOUND proxy_pass connections to other
-# hosts unless this boolean is explicitly enabled. This is the single most
-# common reason a working Ubuntu reverse-proxy config gives "502 Bad Gateway"
-# the moment you move it to CentOS/RHEL.
 setsebool -P httpd_can_network_connect on
 
 # ADDED: firewalld — open port 80 (Ubuntu script needed no firewall rule

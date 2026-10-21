@@ -239,6 +239,8 @@ restorecon -Rv /home/vagrant/proshop
 
 systemctl restart nginx
 systemctl enable nginx
+systemctl restart gunicorn
+systemctl enable gunicorn
 
 echo "=== Web Server Provisioning Complete (CentOS Stream 9) ==="
 echo "Site: http://localhost:8001"

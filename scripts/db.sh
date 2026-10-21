@@ -26,9 +26,7 @@ for i in {1..30}; do
     sleep 2
 done
 
-# CentOS MySQL 8 mein fresh install pe root
-# empty password se socket ke through login hota hai
-# Temporary password check karo pehle
+#checkin temporary password
 TEMP_PASS=""
 if [ -f /var/log/mysqld.log ]; then
     TEMP_PASS=$(grep 'temporary password' /var/log/mysqld.log \
@@ -42,8 +40,7 @@ if [ -n "$TEMP_PASS" ]; then
         -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '';"
 fi
 
-# Ab empty password se login karo
-# validate_password plugin disable karo
+
 mysql -u root -e "UNINSTALL COMPONENT 'file://component_validate_password';" \
     2>/dev/null || true
 
@@ -93,7 +90,7 @@ account default : gmail
 EOF
 chmod 600 /etc/msmtprc
 
-# DB monitoring cron (db.sh mein pehle koi monitoring cron nahi tha)
+# DB monitoring cron (
 timedatectl set-timezone Asia/Kolkata
 
 systemctl enable --now crond

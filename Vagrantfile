@@ -1,13 +1,4 @@
-# CHANGED: removed the 'dotenv' gem / vagrant-dotenv plugin entirely.
-# The gem that plugin pulls in (dotenv 0.11.1) is old and calls
-# File.exists?, a method Ruby removed in newer versions — which is exactly
-# the "NoMethodError: undefined method `exists?'" you just hit. Rather than
-# fighting gem/plugin version mismatches, we just parse secrets.env
-# ourselves with a few lines of plain Ruby. No external dependency, so this
-# can never break due to a gem update again.
-#
-# Uses an absolute path (File.join(__dir__, ...)) so it works no matter
-# which directory you run `vagrant up` from.
+
 secrets_file = File.join(__dir__, 'secrets.env')
 
 unless File.exist?(secrets_file)
@@ -46,6 +37,7 @@ Vagrant.configure("2") do |config|
     db.vm.box = "eurolinux-vagrant/centos-stream-9"
     db.vm.hostname = "db-server"
     db.vm.network "private_network", ip: "192.168.56.12"
+    # db.vm.synced_folder ".", "/vagrant", type: "nfs"
     db.vm.provider "virtualbox" do |vb|
       vb.memory = "512"
       vb.cpus = 1
@@ -107,6 +99,7 @@ Vagrant.configure("2") do |config|
     lb.vm.box = "eurolinux-vagrant/centos-stream-9"
     lb.vm.hostname = "load-balancer"
     lb.vm.network "private_network", ip: "192.168.56.10"
+    lb.vm.network "public_network"
     lb.vm.network "forwarded_port", guest: 80, host: 8080
     lb.vm.provider "virtualbox" do |vb|
       vb.memory = "512"

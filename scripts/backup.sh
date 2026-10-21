@@ -1,11 +1,6 @@
 #!/bin/bash
 
-# NOTE: No functional changes needed for CentOS Stream 9 in this file.
-# `mysqldump` ships as part of the `mysql` client package on RHEL9 (installed
-# via dnf in web.sh), exactly like it does with mysql-client on Ubuntu — same
-# binary name, same flags, same behaviour. The shared /vagrant folder also
-# works identically across both guest OSes since it's a VirtualBox shared
-# folder feature, not an OS-level one.
+
 
 BACKUP_DIR="/vagrant/backups"
 TIMESTAMP=$(date '+%Y%m%d_%H%M%S')

@@ -1,11 +1,3 @@
-#!/bin/bash
-
-# NOTE: This script needed almost NO changes for CentOS Stream 9.
-# `top`, `free`, `df`, `systemctl`, and the `mysql` client command all behave
-# identically on both distros (procps-ng and the MySQL client are the same
-# tools either way) — only the packages providing them differ, and that's
-# already handled in web.sh/web2.sh's dnf install line.
-
 
 #!/bin/bash
 

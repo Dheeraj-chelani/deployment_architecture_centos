@@ -79,23 +79,7 @@ done
 sudo -u vagrant /home/vagrant/proshop/.venv/bin/python manage.py collectstatic --noinput
 
 
-# Backup import
-# LATEST_GZ=$(ls -t /vagrant/backups/*.sql.gz 2>/dev/null | head -1)
-# LATEST_SQL=$(ls -t /vagrant/backups/*.sql 2>/dev/null | head -1)
 
-# if [ -n "$LATEST_GZ" ]; then
-#     echo "GZ Backup mil gayi: $LATEST_GZ"
-#     gunzip -c "$LATEST_GZ" | mysql -u "$DB_USER" -p"$DB_PASSWORD" \
-#         -h "$DB_HOST" "$DB_NAME"
-#     echo "Data import complete"
-# elif [ -n "$LATEST_SQL" ]; then
-#     echo "SQL Backup mil gayi: $LATEST_SQL"
-#     mysql -u "$DB_USER" -p"$DB_PASSWORD" -h "$DB_HOST" \
-#         "$DB_NAME" < "$LATEST_SQL"
-#     echo "Data import complete"
-# else
-#     echo "Koi backup nahi — fresh database"
-# fi
 
 echo "
 from django.contrib.auth.models import User
